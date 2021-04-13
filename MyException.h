@@ -28,10 +28,12 @@ public:
                 part[i] = a[i];
             part[index] = element;
 
-            for (int i = index + 1; i < size - 1; ++i)
+            for (int i = index + 1; i < size; ++i)
                 part[i] = a[i - 1];
 
+            delete[] a;
             a = new int[size];
+
             for (int i = 0; i < size; ++i)
                 a[i] = part[i];
 
@@ -48,7 +50,9 @@ public:
             other[i] = a[i];
         other[size - 1] = element;
 
+        delete[] a;
         a = new int[size];
+
         for (int i = 0; i < size; ++i)
             a[i] = other[i];
 
