@@ -5,16 +5,51 @@
 #include "MyException.h"
 #include "MyOwnException.h"
 
-class Wrong_vec
+class WrongMtrx
 {
 private:
-    std::vector<char*> vec;
+    char** a;
 
 public:
-    void push_vec()
+
+    void fill_ch_matrix(size_t size, size_t num)
     {
-        for (int i = 0; i < 10000; ++i)
-            vec.push_back(new char);
+        a = new char*[size];
+
+        for (size_t i = 0; i < size; ++i)
+            a[i] = new char[num];
+    }
+};
+
+class RightMtrx
+{
+private:
+    char** a;
+    size_t n, m;
+
+public:
+    RightMtrx() : n(0), m(0), a(nullptr) { };
+
+    RightMtrx(size_t size, size_t num)
+    {
+        n = size;
+        m = num;
+
+        a = new char* [size];
+
+        for (size_t i = 0; i < size; ++i)
+            a[i] = new char[num];
+    }
+
+    ~RightMtrx()
+    {
+        if (a != nullptr)
+        {
+            for (size_t i = 0; i < n; ++i)
+                delete[] a[i];
+            delete[] a;
+        }
+        std::cout << "Success!";
     }
 };
 
@@ -24,7 +59,7 @@ public:
     virtual void foo() const { };
 };
 
-class Class2: public Class1
+class Class2 : public Class1
 {
     virtual void foo() const { };
 };
@@ -38,10 +73,7 @@ int recursion(int a)
 
 int main()
 {
-
-    /*==================================================================*/
     /*============================Task1=================================*/
-    /*==================================================================*/
 
     /*std::out_of_range*/
     /*=================*/
@@ -50,7 +82,7 @@ int main()
         std::vector<int> vec({ 1, 2, 3, 4, 5 });
         vec.at(6) = 5;
     }
-    catch(const std::out_of_range& error)
+    catch (const std::out_of_range& error)
     {
         std::cerr << "Out of range: " << error.what() << std::endl;
     }
@@ -89,7 +121,7 @@ int main()
         Class1& my_class2 = my_class1;
         Class2& my_class3 = dynamic_cast<Class2&>(my_class2);
     }
-    catch(const std::bad_cast& error)
+    catch (const std::bad_cast& error)
     {
         std::cerr << "Bad cast: " << error.what() << std::endl;
     }
@@ -97,39 +129,55 @@ int main()
 
     /*std::bad_alloc*/
     /*==============*/
-    //try
-    //{
-    //    recursion(5);
-    //}
-    //catch(const std::bad_alloc& error)
-    //{
-    //    std::cerr << "Bad alloc: " << error.what() << std::endl;
-    //}
+    try
+    {
+        recursion(5);
+    }
+    catch(const std::bad_alloc& error)
+    {
+        std::cerr << "Bad alloc: " << error.what() << std::endl;
+    }
     /*==============*/
 
-    /*==================================================================*/
     /*============================Task2=================================*/
-    /*==================================================================*/
 
     MyException my_exception;
     my_exception.push_back(5);
     my_exception.push_back(6);
     my_exception.push_back(7);
+
+    my_exception.print();
+
     try
     {
         my_exception.push_index(2, 100);
+        my_exception.print();
     }
     catch (const MyOwnException& error)
     {
         std::cerr << "My exception: " << error.what() << std::endl;
     }
 
-    /*==================================================================*/
     /*============================Task3=================================*/
-    /*==================================================================*/
-
-    Wrong_vec wrong;
-    wrong.push_vec();
     
+    try
+    {
+        WrongMtrx wrong;
+        wrong.fill_ch_matrix(123, 122);
+    }
+    catch (const std::exception& error)
+    {
+        std::cout << error.what();
+    }
+
+    try
+    {
+        RightMtrx right(121, 12);
+    }
+    catch (const std::exception& error)
+    {
+        std::cout << error.what();
+    }
+
     return 0;
 }
